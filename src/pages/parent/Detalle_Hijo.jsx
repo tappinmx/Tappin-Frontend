@@ -561,7 +561,7 @@ const ChildDetails = () => {
               </svg>
             </div>
             <p className="text-light-text dark:text-dark-text text-xs sm:text-[13px] md:text-sm font-semibold text-center">
-              Recibido
+              Historial de Recargas
             </p>
           </button>
 
