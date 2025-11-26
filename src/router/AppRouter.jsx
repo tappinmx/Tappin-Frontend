@@ -24,14 +24,14 @@ const AppRouter = () => {
       <Routes>
         {/* Ruta de Login sin protección */}
         <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login/" element={<Login />} />
         
         {/* Ruta de Registro sin protección */}
-        <Route path="/register" element={<Register />} />
+        <Route path="/register/" element={<Register />} />
         
         {/* Dashboard Super Admin */}
         <Route
-          path="/super-admin"
+          path="/super-admin/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
               <SuperAdminDashboard />
@@ -41,7 +41,7 @@ const AppRouter = () => {
 
         {/* Dashboard Branch */}
         <Route
-          path="/branch"
+          path="/branch/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.BRANCH]}>
               <BranchDashboard />
@@ -51,7 +51,7 @@ const AppRouter = () => {
 
         {/* Padres - Branch */}
         <Route
-          path="/branch/padres"
+          path="/branch/padres/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.BRANCH]}>
               <PadresBranch />
@@ -61,7 +61,7 @@ const AppRouter = () => {
 
         {/* Estudiantes - Branch */}
         <Route
-          path="/branch/estudiantes"
+          path="/branch/estudiantes/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.BRANCH]}>
               <EstudiantesBranch />
@@ -71,7 +71,7 @@ const AppRouter = () => {
 
         {/* Cobrar - Branch */}
         <Route
-          path="/branch/cobrar"
+          path="/branch/cobrar/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.BRANCH]}>
               <CobrarBranch />
@@ -81,7 +81,7 @@ const AppRouter = () => {
 
         {/* Dashboard Client Admin */}
         <Route
-          path="/client-admin"
+          path="/client-admin/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.CLIENT_ADMIN]}>
               <ClientAdminDashboard />
@@ -91,7 +91,7 @@ const AppRouter = () => {
 
         {/* Dashboard Parent (Padres de Familia) */}
         <Route
-          path="/parent"
+          path="/parent/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.PARENT]}>
               <ParentDashboard />
@@ -111,7 +111,7 @@ const AppRouter = () => {
 
         {/* Dashboard Staff - Usa el mismo componente que Parent */}
         <Route
-          path="/staff"
+          path="/staff/"
           element={
             <ProtectedRoute allowedRoles={[ROLES.STAFF]}>
               <ParentDashboard />
@@ -131,17 +131,17 @@ const AppRouter = () => {
 
         {/* Páginas de Pago - Protegidas pero accesibles por Parent y Staff */}
         <Route
-          path="/parent/payment/success"
+          path="/parent/payment/success/"
           element={<PaymentSuccess />}
         />
         <Route
-          path="/parent/payment/cancel"
+          path="/parent/payment/cancel/"
           element={<PaymentCancel />}
         />
 
         {/* Página de No Autorizado */}
         <Route 
-          path="/unauthorized" 
+          path="/unauthorized/" 
           element={
             <div className="min-h-screen bg-[#1b1c1e] flex items-center justify-center">
               <div className="text-center">

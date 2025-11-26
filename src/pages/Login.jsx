@@ -108,14 +108,14 @@ const Login = () => {
 
       // Redirigir según el rol del usuario
       const dashboardRoutes = {
-        super_admin: '/super-admin',
-        client_admin: '/client-admin',
-        branch: '/branch',
-        parent: '/parent',
-        staff: '/staff'
+        super_admin: '/super-admin/',
+        client_admin: '/client-admin/',
+        branch: '/branch/',
+        parent: '/parent/',
+        staff: '/staff/'
       }
 
-      const route = dashboardRoutes[userData.role] || '/parent'
+      const route = dashboardRoutes[userData.role]
       navigate(route)
       
     } catch (error) {
