@@ -850,7 +850,7 @@ const ChildDetails = () => {
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
                   <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300">
@@ -899,48 +899,12 @@ const ChildDetails = () => {
 
       {/* Modal de recibir fondos (en desarrollo) */}
       <Modal 
-        isOpen={isReceiveModalOpen} 
+        isOpen={isReceiveModalOpen}
         onClose={handleCloseReceiveModal}
         showIcon={false}
         showCloseButton={false}
       >
-        <div className="text-center py-4 sm:py-6">
-          {/* Icono de mantenimiento con animación */}
-          <div className="flex justify-center mb-4 sm:mb-5">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FDB913] flex items-center justify-center">
-              <svg 
-                className="w-12 h-12 sm:w-14 sm:h-14 text-black animate-wrench" 
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                {/* Llave inglesa */}
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-              </svg>
-            </div>
-          </div>
-
-          {/* Título */}
-          <h3 className="text-light-text dark:text-dark-text text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
-            Característica en desarrollo
-          </h3>
-
-          {/* Descripción */}
-          <p className="text-light-text-secondary dark:text-gray-400 text-sm sm:text-[15px] mb-6 sm:mb-7 leading-relaxed">
-            Esta característica aún no está disponible. Estamos trabajando arduamente para que esté lista pronto.
-          </p>
-
-          {/* Botón Entendido */}
-          <button
-            onClick={handleCloseReceiveModal}
-            className="w-full bg-[#FDB913] hover:bg-[#fcc000] active:bg-[#e5a711] text-black font-bold py-3.5 sm:py-4 rounded-lg transition-all duration-200 text-[15px] sm:text-base shadow-sm hover:shadow-md"
-          >
-            Entendido
-          </button>
-        </div>
+        <RecargaHistory studentId={childData?.id} onClose={handleCloseReceiveModal} />
       </Modal>
 
       {/* Toast de notificaciones */}
@@ -951,6 +915,77 @@ const ChildDetails = () => {
           onClose={closeToast}
           duration={3000}
         />
+      )}
+    </div>
+  )
+}
+
+// Componente para mostrar historial de recargas
+import { useEffect as useEffectRec, useState as useStateRec } from 'react'
+import { getData } from '../../services/api'
+function RecargaHistory({ studentId, onClose }) {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [recargas, setRecargas] = useState([])
+
+  useEffect(() => {
+    async function fetchRecargas() {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await getData(`/stripe/payments/history/${studentId}`)
+        setRecargas(res?.payments || [])
+      } catch (err) {
+        setError('No se pudo cargar el historial de recargas')
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (studentId) fetchRecargas()
+  }, [studentId])
+
+  return (
+    <div className="py-4 sm:py-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-light-text dark:text-dark-text text-xl sm:text-2xl font-bold">Historial de Recargas</h3>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#FDB913] hover:bg-[#fcc000] active:bg-[#e5a711] flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+          aria-label="Cerrar"
+        >
+          <span className="text-black text-lg sm:text-xl font-bold">×</span>
+        </button>
+      </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FDB913]" />
+        </div>
+      ) : error ? (
+        <p className="text-red-500 text-center mb-4">{error}</p>
+      ) : recargas.length === 0 ? (
+        <p className="text-gray-500 text-center mb-4">No hay recargas registradas.</p>
+      ) : (
+        <div className="max-h-96 overflow-y-auto">
+          {recargas.map((r) => (
+            <div key={r.id} className="flex items-center justify-between bg-light-card dark:bg-dark-card rounded-lg p-3 mb-2 transition-colors duration-200">
+              <span className="font-semibold text-light-text dark:text-dark-text">{r.amount}</span>
+              <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                {(() => {
+                  if (!r.date) return 'Sin fecha';
+                  const [datePart, timePart] = r.date.split(' ');
+                  if (!datePart || !timePart) return r.date;
+                  const [day, month, year] = datePart.split('/');
+                  const [hour, minute] = timePart.split(':');
+                  const d = new Date(year, month - 1, day, hour, minute);
+                  return isNaN(d.getTime()) ? r.date : d.toLocaleString();
+                })()}
+              </span>
+              <span className="ml-2 text-xs font-bold text-green-400">
+                {r.status === 'completed' || r.status === 'succeeded' ? 'Acreditada' : 'Pendiente'}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   )
